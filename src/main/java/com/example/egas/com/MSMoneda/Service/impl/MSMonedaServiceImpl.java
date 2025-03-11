@@ -3,6 +3,7 @@ package com.example.egas.com.MSMoneda.Service.impl;
 import com.example.egas.com.MSMoneda.Model.Moneda;
 import com.example.egas.com.MSMoneda.Repository.IMSMonedaRepository;
 import com.example.egas.com.MSMoneda.Service.IMSMonedaService;
+import com.example.egas.com.MSMoneda.response.CambioRequest;
 import com.example.egas.com.MSMoneda.response.CambioResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,12 @@ public class MSMonedaServiceImpl implements IMSMonedaService {
     private final IMSMonedaRepository monedaRepository;
 
     @Override
-    public Mono<List<Moneda>> listar() {
+    public Mono<List<Moneda>> listarMoneda() {
         return Mono.just(monedaRepository.findAll());
     }
 
     @Override
-    public Mono<CambioResponse> obtenerMoneda(Integer idMoneda, Integer cantidad) {
+    public Mono<CambioResponse> obtenerCambio(Integer idMoneda, Integer cantidad) {
 
         return Mono.justOrEmpty(monedaRepository.findById(idMoneda)).map(monedaHallada -> {
 
@@ -36,5 +37,24 @@ public class MSMonedaServiceImpl implements IMSMonedaService {
 
     }
 
+    @Override
+    public Mono<CambioResponse> obtenerCambio2(CambioRequest cambioRequest) {
+        return Mono.justOrEmpty(monedaRepository.findById(cambioRequest.getIdMoneda())).map(monedaHallada -> {
+
+            BigDecimal totalCambio = monedaHallada.getValMoneda().multiply(cambioRequest.getTotalCambio());
+            CambioResponse cambioResponse = new CambioResponse(monedaHallada, totalCambio);
+            return cambioResponse;
+        });
+    }
+
+    @Override
+    public Mono<CambioResponse> obtenerCambio3(CambioRequest cambioRequest) {
+        return Mono.justOrEmpty(monedaRepository.findById(cambioRequest.getIdMoneda())).map(monedaHallada -> {
+
+            BigDecimal totalCambio = monedaHallada.getValMoneda().multiply(cambioRequest.getTotalCambio());
+            CambioResponse cambioResponse = new CambioResponse(monedaHallada, totalCambio);
+            return cambioResponse;
+        });
+    }
 
 }
